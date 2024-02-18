@@ -18,6 +18,6 @@ The "IlyasToken" (IST) is an ERC-20 compliant token deployed on the Ethereum blo
 
 ## Contract Details:
 
-- **Deployed Contract Address:** [0x87131F24E1E6eF32F5A5936497135a4428B3A786](https://etherscan.io/address/0x87131F24E1E6eF32F5A5936497135a4428B3A786)
+- **Deployed Contract Address:** [0x87131F24E1E6eF32F5A5936497135a4428B3A786](https://goerli.etherscan.io/address/0x87131F24E1E6eF32F5A5936497135a4428B3A786)
 
 
