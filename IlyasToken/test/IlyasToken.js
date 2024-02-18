@@ -5,15 +5,14 @@ describe("IlyasToken contract", function () {
   let Token;
   let IlyasToken;
   let owner;
-  let addr1;               
-  let addr2;
+  let address_1;               
+  let address_2;
   let tokenCap = 100000000;
   let tokenBlockReward = 50;
 
   beforeEach(async function () {
-    // Get the ContractFactory and Signers here.
     Token = await ethers.getContractFactory("IlyasToken");
-    [owner, addr1, addr2] = await hre.ethers.getSigners();
+    [owner, address_1, address_2] = await hre.ethers.getSigners();
 
     IlyasToken = await Token.deploy(tokenCap, tokenBlockReward);
   });
@@ -43,27 +42,24 @@ describe("IlyasToken contract", function () {
 
   describe("Transactions", function () {
     it("Should transfer tokens between accounts", async function () {
-      // Transfer 50 tokens from owner to addr1
-      await IlyasToken.transfer(addr1.address, 50);
-      const addr1Balance = await IlyasToken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(50);
+      // 50 токенов в address_1
+      await IlyasToken.transfer(address_1.address, 50);
+      const address_1Balance = await IlyasToken.balanceOf(address_1.address);
+      expect(address_1Balance).to.equal(50);
 
-      // Transfer 50 tokens from addr1 to addr2
-      // We use .connect(signer) to send a transaction from another account
-      await IlyasToken.connect(addr1).transfer(addr2.address, 50);
-      const addr2Balance = await IlyasToken.balanceOf(addr2.address);
+      // 50 токенов from address_1 to addr2
+      await IlyasToken.connect(address_1).transfer(address_2.address, 50);
+      const addr2Balance = await IlyasToken.balanceOf(address_2.address);
       expect(addr2Balance).to.equal(50);
     });
 
     it("Should fail if sender doesn't have enough tokens", async function () {
       const initialOwnerBalance = await IlyasToken.balanceOf(owner.address);
-      // Try to send 1 token from addr1 (0 tokens) to owner (1000000 tokens).
-      // `require` will evaluate false and revert the transaction.
+      // Попытка отправить 1 токен с адреса 1 с 0 токенов владельцу с 1000000 токенами
       await expect(
-        IlyasToken.connect(addr1).transfer(owner.address, 1)
+        IlyasToken.connect(address_1).transfer(owner.address, 1)
       ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
 
-      // Owner balance shouldn't have changed.
       expect(await IlyasToken.balanceOf(owner.address)).to.equal(
         initialOwnerBalance
       );
@@ -72,20 +68,18 @@ describe("IlyasToken contract", function () {
     it("Should update balances after transfers", async function () {
       const initialOwnerBalance = await IlyasToken.balanceOf(owner.address);
 
-      // Transfer 100 tokens from owner to addr1.
-      await IlyasToken.transfer(addr1.address, 100);
+      await IlyasToken.transfer(address_1.address, 100);
 
-      // Transfer another 50 tokens from owner to addr2.
-      await IlyasToken.transfer(addr2.address, 50);
+      await IlyasToken.transfer(address_2.address, 50);
 
-      // Check balances.
+      // проверка баланса
       const finalOwnerBalance = await IlyasToken.balanceOf(owner.address);
       expect(finalOwnerBalance).to.equal(initialOwnerBalance.sub(150));
 
-      const addr1Balance = await IlyasToken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(100);
+      const address_1Balance = await IlyasToken.balanceOf(address_1.address);
+      expect(address_1Balance).to.equal(100);
 
-      const addr2Balance = await IlyasToken.balanceOf(addr2.address);
+      const addr2Balance = await IlyasToken.balanceOf(address_2.address);
       expect(addr2Balance).to.equal(50);
     });
   });
